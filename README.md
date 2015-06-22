@@ -3,9 +3,16 @@
 ## Description
 This Scala programm can interpret any EXP programm.
 
+##Usage
+Compile and run the project with sbt
+
+```
+sbt compile
+sbt run <filename>
+```
+
 ## EXP
 EXP is a custom, turing complete programming language, which is used by the Software Paradigms course at the TU Graz. 
-
 ##Supported variables and functions
 Following built in variables are supported:
  - int
