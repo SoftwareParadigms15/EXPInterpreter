@@ -378,7 +378,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = plus([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception DivByZero!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -405,7 +405,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = minus([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception DivByZero!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -414,7 +414,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = mult([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception DivByZero!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -423,7 +423,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = div([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception DivByZero!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
