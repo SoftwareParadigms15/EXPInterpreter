@@ -1,4 +1,4 @@
-# EXPInterpreter
+# EXPInterpreter [![Build Status](https://travis-ci.org/SoftwareParadigms15/EXPInterpreter.svg?branch=master)](https://travis-ci.org/SoftwareParadigms15/EXPInterpreter)
 
 ## Description
 This Scala programm can interpret any EXP programm.
