@@ -27,6 +27,7 @@ Following built-in functions are supported:
  - rest
  - build
  - eq?
+ - lt?
  
 User defined functions and exceptions are also supported.
 
