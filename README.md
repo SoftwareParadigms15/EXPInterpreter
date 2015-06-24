@@ -26,6 +26,7 @@ Following built-in functions are supported:
  - first
  - rest
  - build
+ - inc
  - eq?
  - lt?
  

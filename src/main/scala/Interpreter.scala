@@ -44,6 +44,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def builtinInc(a: Value) = a match {
+    case ValInt(x) => ValInt(x+1)
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
   def predEq(a: Value, b: Value) = a == b
 
   def predLt(a: Value, b: Value) = (a,b) match {
@@ -89,6 +94,8 @@ object Interpreter {
 
     case ExpFunction("build", args: List[Expression]) => builtinBuild(interpret2(functionEnvironment, variableEnvironment, args(0)),
                                                                       interpret2(functionEnvironment, variableEnvironment, args(1)))
+
+    case ExpFunction("inc", args: List[Expression]) => builtinInc(interpret2(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction(funcIdentifier, args: List[Expression]) => {
       val fnDeclaration = functionEnvironment get funcIdentifier

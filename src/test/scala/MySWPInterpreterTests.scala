@@ -427,4 +427,13 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("Test inc function") {
+    val prog = """
+    {}
+    inc(inc(1))
+               """
+    assertResult("3") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
