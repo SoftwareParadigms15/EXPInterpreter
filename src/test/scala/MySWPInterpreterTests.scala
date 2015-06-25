@@ -445,4 +445,22 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("Test inc function exception") {
+    val prog = """
+    {}
+    inc(inc([1]))
+               """
+    assertResult("Uncaught exception TypeMismatch!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("Test dec function exception") {
+    val prog = """
+    {}
+    dec(dec([2]))
+               """
+    assertResult("Uncaught exception TypeMismatch!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
