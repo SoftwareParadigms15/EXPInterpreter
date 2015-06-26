@@ -53,8 +53,6 @@ class ExpParser extends JavaTokenParsers {
     x => ExpThrow(x)
   }
 
-
-
   val cond: Parser[ExpCond] = "if" ~> (predicate <~ "then") ~ (expression <~ "else") ~ expression ^^ {
     case p~e1~e2 => ExpCond(p,e1,e2)
   }

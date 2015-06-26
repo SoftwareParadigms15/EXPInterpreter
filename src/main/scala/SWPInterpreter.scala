@@ -14,16 +14,19 @@ object SWPInterpreter {
   }
 
 
-  //DO NOT CHANGE!
-  //This function will be used to test your solution!
+
   def evaluateProgram(program:String):String = {
-    val Program(funcs, exp) = ParseProgram.parse(program).get
-    val result = Interpreter.interpret(funcs.map(x=>(x.name, x)).toMap, Map(), exp)
-    PrettyPrinter.print(result)
+    try {
+      val Program(funcs, exp) = ParseProgram.parse(program).get
+      val result = Interpreter.interpret(funcs.map(x=>(x.name, x)).toMap, Map(), exp)
+      PrettyPrinter.print(result)
+    } catch {
+      case e: InterpreterFailedException => "Interpretation failed!"
+      case e: Exception => e.getMessage
+    }
   }
 
-  //DO NOT CHANGE!
-  //This function will be used to test your solution!
+
   def checkProgramGrammer(program:String):Boolean = {
     ParseProgram.parse(program).successful
   }

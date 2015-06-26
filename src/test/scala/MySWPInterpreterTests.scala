@@ -463,4 +463,21 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("bad program") {
+    val prog = """
+    {}
+    blabla
+               """
+    assertResult("Interpretation failed!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("bad program2") {
+    val prog = """
+    blabla
+               """
+    assertResult("No result when parsing failed") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }

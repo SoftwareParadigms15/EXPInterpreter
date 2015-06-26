@@ -1,4 +1,5 @@
-case class ExpInternalException(val handleWith: String) extends Exception
+case class ExpInternalException(handleWith: String) extends Exception
+case class InterpreterFailedException() extends Exception
 
 object Interpreter {
 
@@ -29,7 +30,7 @@ object Interpreter {
 
   def builtinFirst(args: Value) = args match {
     case ValList(Nil) => throw ExpInternalException("EmptyList")
-    case ValList(v) => v(0)
+    case ValList(v) => v.head
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
@@ -78,26 +79,26 @@ object Interpreter {
 
     case ExpVariable(name) => variableEnvironment.get(name) match {
       case Some(n) => n
-      case _ => ???
+      case None => throw new InterpreterFailedException
     }
 
     case ExpInt(v) => ValInt(v)
 
     case ExpList(v) => ValList(v.map(ex => interpret2(functionEnvironment, variableEnvironment, ex)))
 
-    case ExpFunction("plus", args: List[Expression]) => builtinPlus(interpret2(functionEnvironment, variableEnvironment, args(0)),
+    case ExpFunction("plus", args: List[Expression]) => builtinPlus(interpret2(functionEnvironment, variableEnvironment, args.head),
                                                                     interpret2(functionEnvironment, variableEnvironment, args(1)))
-    case ExpFunction("minus", args: List[Expression]) => builtinMinus(interpret2(functionEnvironment, variableEnvironment, args(0)),
+    case ExpFunction("minus", args: List[Expression]) => builtinMinus(interpret2(functionEnvironment, variableEnvironment, args.head),
                                                                       interpret2(functionEnvironment, variableEnvironment, args(1)))
-    case ExpFunction("mult", args: List[Expression]) => builtinMult(interpret2(functionEnvironment, variableEnvironment, args(0)),
+    case ExpFunction("mult", args: List[Expression]) => builtinMult(interpret2(functionEnvironment, variableEnvironment, args.head),
                                                                     interpret2(functionEnvironment, variableEnvironment, args(1)))
-    case ExpFunction("div", args: List[Expression]) => builtinDiv(interpret2(functionEnvironment, variableEnvironment, args(0)),
+    case ExpFunction("div", args: List[Expression]) => builtinDiv(interpret2(functionEnvironment, variableEnvironment, args.head),
                                                                   interpret2(functionEnvironment, variableEnvironment, args(1)))
     case ExpFunction("first", args: List[Expression]) => builtinFirst(interpret2(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("rest", args: List[Expression]) => builtinRest(interpret2(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("build", args: List[Expression]) => builtinBuild(interpret2(functionEnvironment, variableEnvironment, args(0)),
+    case ExpFunction("build", args: List[Expression]) => builtinBuild(interpret2(functionEnvironment, variableEnvironment, args.head),
                                                                       interpret2(functionEnvironment, variableEnvironment, args(1)))
 
     case ExpFunction("inc", args: List[Expression]) => builtinInc(interpret2(functionEnvironment, variableEnvironment, args.head))
@@ -112,19 +113,19 @@ object Interpreter {
           val newEnv = params.zip(interpretedArgs).toMap
           interpret2(functionEnvironment, newEnv, body)
         }
-        case _ => ???
+        case None => throw new InterpreterFailedException
       }
     }
 
     case ExpCond(Predicate("eq", params),e1,e2) => {
-      if (predEq(interpret2(functionEnvironment, variableEnvironment, params(0)), interpret2(functionEnvironment, variableEnvironment, params(1))))
+      if (predEq(interpret2(functionEnvironment, variableEnvironment, params.head), interpret2(functionEnvironment, variableEnvironment, params(1))))
         interpret2(functionEnvironment, variableEnvironment, e1)
       else
         interpret2(functionEnvironment, variableEnvironment, e2)
     }
 
     case ExpCond(Predicate("lt", params),e1,e2) => {
-      if (predLt(interpret2(functionEnvironment, variableEnvironment, params(0)), interpret2(functionEnvironment, variableEnvironment, params(1))))
+      if (predLt(interpret2(functionEnvironment, variableEnvironment, params.head), interpret2(functionEnvironment, variableEnvironment, params(1))))
         interpret2(functionEnvironment, variableEnvironment, e1)
       else
         interpret2(functionEnvironment, variableEnvironment, e2)
