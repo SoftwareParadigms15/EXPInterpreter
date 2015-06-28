@@ -38,7 +38,6 @@ class ExpParser extends JavaTokenParsers {
 
   val handler: Parser[Handler] = (exceptionId | "_") ~ ":" ~ expression ^^ {
     case handlerId~_~ex => Handler(handlerId, ex)
-    case _ => ???
   }
 
   val tryCatch: Parser[ExpTryCatch] = "try" ~> (expression <~ "catch") ~ ("{" ~> repsep(handler, ";")) <~ "}" ^^ {
