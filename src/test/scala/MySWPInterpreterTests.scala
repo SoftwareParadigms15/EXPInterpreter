@@ -482,10 +482,10 @@ class MySWPInterpreterTests extends FunSuite {
   }
   test("bad program no condition") {
     val prog = """
-    {length(x) = if gt?(x,[]) then 0 else length(plus(1, length(rest(x))))}
+    {length(x) = if badcond?(x,[]) then 0 else length(plus(1, length(rest(x))))}
     length([1,2,3,4,5,6,7,8])
                """
-    assertResult("Interpretation failed! Condition not declared: gt") {
+    assertResult("Interpretation failed! Condition not declared: badcond") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -509,8 +509,8 @@ class MySWPInterpreterTests extends FunSuite {
   }
   test("userfunction 2") {
     val prog = """
-   {len(x) = if eq?(x,[]) then 0 else plus(1, len(rest(x)))}
-   len([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
+   {length(x) = if eq?(x,[]) then 0 else plus(1, len(rest(x)))}
+   length([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
                """
     assertResult("20") {
       SWPInterpreter.evaluateProgram(prog)
@@ -522,6 +522,60 @@ class MySWPInterpreterTests extends FunSuite {
    foo(2)
                """
     assertResult("Stackoverflow! Maybe infinite recursion.") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("built in func redefinition") {
+    val prog = """
+   {plus(x,y) = x}
+   plus(2,1)
+               """
+    assertResult("2") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("gt 1") {
+    val prog = """
+   {foo(x,y) = if gt?(x,y) then 0 else 1}
+   foo(2,1)
+               """
+    assertResult("0") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("gt 2") {
+    val prog = """
+   {foo(x,y) = if gt?(y,x) then 0 else 1}
+   foo(2,1)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("len 1") {
+    val prog = """
+   {}
+   len([1,2])
+               """
+    assertResult("2") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("len 2") {
+    val prog = """
+   {}
+   len(2)
+               """
+    assertResult("Uncaught exception TypeMismatch!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("reverse") {
+    val prog = """
+   {}
+   reverse([1,2,3])
+               """
+    assertResult("[3,2,1]") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
