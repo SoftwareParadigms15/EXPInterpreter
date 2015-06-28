@@ -95,7 +95,6 @@ object Interpreter {
           interpret_main(functionEnvironment, newEnv, body)
         }
         case None => interpret_builtin(functionEnvironment, variableEnvironment, expression.asInstanceOf[ExpFunction])
-          //throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
       }
     }
 
@@ -141,12 +140,20 @@ object Interpreter {
 
     case ExpFunction("plus", args: List[Expression]) => builtinPlus(interpret_main(functionEnvironment, variableEnvironment, args.head),
       interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("add", args: List[Expression]) => builtinPlus(interpret_main(functionEnvironment, variableEnvironment, args.head),
+      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+
     case ExpFunction("minus", args: List[Expression]) => builtinMinus(interpret_main(functionEnvironment, variableEnvironment, args.head),
       interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("sub", args: List[Expression]) => builtinMinus(interpret_main(functionEnvironment, variableEnvironment, args.head),
+      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+
     case ExpFunction("mult", args: List[Expression]) => builtinMult(interpret_main(functionEnvironment, variableEnvironment, args.head),
       interpret_main(functionEnvironment, variableEnvironment, args(1)))
+
     case ExpFunction("div", args: List[Expression]) => builtinDiv(interpret_main(functionEnvironment, variableEnvironment, args.head),
       interpret_main(functionEnvironment, variableEnvironment, args(1)))
+
     case ExpFunction("first", args: List[Expression]) => builtinFirst(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("rest", args: List[Expression]) => builtinRest(interpret_main(functionEnvironment, variableEnvironment, args.head))
