@@ -21,8 +21,9 @@ object SWPInterpreter {
       val result = Interpreter.interpret(funcs.map(x=>(x.name, x)).toMap, Map(), exp)
       PrettyPrinter.print(result)
     } catch {
-      case e: InterpreterFailedException => "Interpretation failed!"
+      case InterpreterFailedException(msg) => "Interpretation failed! "+msg
       case e: Exception => e.getMessage
+      case e: StackOverflowError => "Stackoverflow! Maybe infinite recursion."
     }
   }
 

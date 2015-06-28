@@ -1,5 +1,5 @@
 case class ExpInternalException(handleWith: String) extends Exception
-case class InterpreterFailedException() extends Exception
+case class InterpreterFailedException(msg: String) extends Exception
 
 object Interpreter {
 
@@ -79,7 +79,7 @@ object Interpreter {
 
     case ExpVariable(name) => variableEnvironment.get(name) match {
       case Some(n) => n
-      case None => throw new InterpreterFailedException
+      case None => throw new InterpreterFailedException("Variable not declared: "+name)
     }
 
     case ExpInt(v) => ValInt(v)
@@ -113,7 +113,7 @@ object Interpreter {
           val newEnv = params.zip(interpretedArgs).toMap
           interpret2(functionEnvironment, newEnv, body)
         }
-        case None => throw new InterpreterFailedException
+        case None => throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
       }
     }
 
@@ -130,6 +130,8 @@ object Interpreter {
       else
         interpret2(functionEnvironment, variableEnvironment, e2)
     }
+
+    case ExpCond(Predicate(func, _),_,_) => throw new InterpreterFailedException("Condition not declared: "+func)
 
     case ExpTryCatch(tryExpression: Expression, handlers: List[Handler]) => {
       try {
@@ -148,6 +150,7 @@ object Interpreter {
 
     case ExpThrow(exceptionId) => throw ExpInternalException(exceptionId)
 
+    case _ => throw new InterpreterFailedException("Unknown expression")
 
 
   }
