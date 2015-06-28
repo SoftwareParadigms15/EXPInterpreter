@@ -19,17 +19,17 @@ Following built in variables are supported:
  - list
  
 Following built-in functions are supported:
- - plus
- - minus
- - mult
- - div
+ - plus (+)
+ - minus (-)
+ - mult (*)
+ - div (/)
  - first
  - rest
  - build
- - inc
- - dec
- - eq?
- - lt?
+ - inc (increase)
+ - dec (decrease)
+ - eq? (equals)
+ - lt? (lower than)
  
 User defined functions and exceptions are also supported.
 
@@ -56,4 +56,8 @@ Programm with user defined functions and user defined exceptions:
 }
 bar(5)
 ```
-
+Programm for counting the elements in a list:
+```
+{len(x) = if eq?(x,[]) then 0 else plus(1, len(rest(x)))}
+len([1,2,3])
+```
