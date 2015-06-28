@@ -11,6 +11,11 @@ sbt compile
 sbt run <filename>
 ```
 
+To create an executable JAR file use
+```
+sbt assembly
+```
+
 ##EXP
 EXP is a custom, turing complete programming language, which is used by the Software Paradigms course at the TU Graz. 
 ##Supported variables and functions
