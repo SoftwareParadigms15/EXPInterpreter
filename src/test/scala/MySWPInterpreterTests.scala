@@ -463,20 +463,65 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
-  test("bad program") {
+  test("bad program no variable") {
     val prog = """
     {}
     blabla
                """
-    assertResult("Interpretation failed!") {
+    assertResult("Interpretation failed! Variable not declared: blabla") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
-  test("bad program2") {
+  test("bad program syntax") {
     val prog = """
     blabla
                """
     assertResult("No result when parsing failed") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("bad program no condition") {
+    val prog = """
+    {length(x) = if gt?(x,[]) then 0 else length(plus(1, length(rest(x))))}
+    length([1,2,3,4,5,6,7,8])
+               """
+    assertResult("Interpretation failed! Condition not declared: gt") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("bad program no function") {
+    val prog = """
+    {}
+    test([])
+               """
+    assertResult("Interpretation failed! Function not declared: test") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("userfunction 1") {
+    val prog = """
+    {fak(x) = if eq?(x,0) then 1 else mult(x, fak(minus(x,1)))}
+    fak(6)
+               """
+    assertResult("720") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("userfunction 2") {
+    val prog = """
+   {len(x) = if eq?(x,[]) then 0 else plus(1, len(rest(x)))}
+   len([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
+               """
+    assertResult("20") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("infinite recursion") {
+    val prog = """
+   {foo(x) = foo(x)}
+   foo(2)
+               """
+    assertResult("Stackoverflow! Maybe infinite recursion.") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
