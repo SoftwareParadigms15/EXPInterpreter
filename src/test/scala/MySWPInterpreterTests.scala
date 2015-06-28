@@ -482,10 +482,10 @@ class MySWPInterpreterTests extends FunSuite {
   }
   test("bad program no condition") {
     val prog = """
-    {length(x) = if gt?(x,[]) then 0 else length(plus(1, length(rest(x))))}
+    {length(x) = if badcond?(x,[]) then 0 else length(plus(1, length(rest(x))))}
     length([1,2,3,4,5,6,7,8])
                """
-    assertResult("Interpretation failed! Condition not declared: gt") {
+    assertResult("Interpretation failed! Condition not declared: badcond") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -531,6 +531,24 @@ class MySWPInterpreterTests extends FunSuite {
    plus(2,1)
                """
     assertResult("2") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("gt 1") {
+    val prog = """
+   {foo(x,y) = if gt?(x,y) then 0 else 1}
+   foo(2,1)
+               """
+    assertResult("0") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("gt 2") {
+    val prog = """
+   {foo(x,y) = if gt?(y,x) then 0 else 1}
+   foo(2,1)
+               """
+    assertResult("1") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }

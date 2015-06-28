@@ -62,6 +62,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def predGt(a: Value, b: Value) = (a,b) match {
+    case (ValInt(v1), ValInt(v2)) => v1 > v2
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
   def interpret(functionEnvironment: Map[FunctionName, FunctionDeclaration],
                 variableEnvironment: Map[VariableName, Value],
                 expression: Expression): Value = {
@@ -107,6 +112,13 @@ object Interpreter {
 
     case ExpCond(Predicate("lt", params),e1,e2) => {
       if (predLt(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
+        interpret_main(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret_main(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("gt", params),e1,e2) => {
+      if (predGt(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
         interpret_main(functionEnvironment, variableEnvironment, e1)
       else
         interpret_main(functionEnvironment, variableEnvironment, e2)
