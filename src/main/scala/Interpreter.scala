@@ -55,6 +55,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def builtinLen(a: Value) = a match {
+    case ValList(x) => ValInt(x.length)
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
   def predEq(a: Value, b: Value) = a == b
 
   def predLt(a: Value, b: Value) = (a,b) match {
@@ -176,6 +181,8 @@ object Interpreter {
     case ExpFunction("inc", args: List[Expression]) => builtinInc(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("dec", args: List[Expression]) => builtinDec(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction("len", args: List[Expression]) => builtinLen(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
   }

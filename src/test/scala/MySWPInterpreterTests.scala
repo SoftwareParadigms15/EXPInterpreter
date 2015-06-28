@@ -509,8 +509,8 @@ class MySWPInterpreterTests extends FunSuite {
   }
   test("userfunction 2") {
     val prog = """
-   {len(x) = if eq?(x,[]) then 0 else plus(1, len(rest(x)))}
-   len([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
+   {length(x) = if eq?(x,[]) then 0 else plus(1, len(rest(x)))}
+   length([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20])
                """
     assertResult("20") {
       SWPInterpreter.evaluateProgram(prog)
@@ -549,6 +549,24 @@ class MySWPInterpreterTests extends FunSuite {
    foo(2,1)
                """
     assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("len 1") {
+    val prog = """
+   {}
+   len([1,2])
+               """
+    assertResult("2") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("len 2") {
+    val prog = """
+   {}
+   len(2)
+               """
+    assertResult("Uncaught exception TypeMismatch!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
