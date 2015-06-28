@@ -570,4 +570,13 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("reverse") {
+    val prog = """
+   {}
+   reverse([1,2,3])
+               """
+    assertResult("[3,2,1]") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }

@@ -60,6 +60,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def builtinReverse(a: Value) = a match {
+    case ValList(x) => ValList(x.reverse)
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
   def predEq(a: Value, b: Value) = a == b
 
   def predLt(a: Value, b: Value) = (a,b) match {
@@ -183,6 +188,8 @@ object Interpreter {
     case ExpFunction("dec", args: List[Expression]) => builtinDec(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("len", args: List[Expression]) => builtinLen(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction("reverse", args: List[Expression]) => builtinReverse(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
   }
