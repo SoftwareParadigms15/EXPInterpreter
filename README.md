@@ -11,27 +11,32 @@ sbt compile
 sbt run <filename>
 ```
 
-## EXP
+##EXP
 EXP is a custom, turing complete programming language, which is used by the Software Paradigms course at the TU Graz. 
 ##Supported variables and functions
-Following built in variables are supported:
- - int
+Following built-in variables are supported:
+ - integer
  - list
  
 Following built-in functions are supported:
- - plus (+)
- - minus (-)
- - mult (*)
- - div (/)
- - first
- - rest
- - build
- - inc (increase)
- - dec (decrease)
- - eq? (equals)
- - lt? (lower than)
+ - plus(x,y) (x+y)
+ - minus(x,y) (x-y)
+ - mult(x,y) (x*y)
+ - div(x,y) (x/y)
+ - first(x) (first element in list x)
+ - rest(x) (all elements in list x except the first one)
+ - build(x,y) (put element x in list y)
+ - inc(x) (increase x by one)
+ - dec(x) (decrease x by one)
+ - reverse(x) (returns list x in reverse order)
+ - len(x) (retunrns the length of list x as an integer)
+
+Following built-in conditionals are supported (all conditionals support lists and integers):
+ - eq?(x,y) (true if x and y have the same value)
+ - lt?(x,y) (true if x < y)
+ - gt?(x,y) (true if y > x)
  
-User defined functions and exceptions are also supported.
+User defined functions and exceptions are also supported. Built-in functions can be overloaded by user defined functions if they have the same name. In this case, always the user defined function will be used.
 
 ##Examples
 
