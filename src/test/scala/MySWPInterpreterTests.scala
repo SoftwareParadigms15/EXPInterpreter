@@ -525,4 +525,13 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("built in func redefinition") {
+    val prog = """
+   {plus(x,y) = x}
+   plus(2,1)
+               """
+    assertResult("2") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
