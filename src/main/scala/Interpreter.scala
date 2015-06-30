@@ -1,5 +1,3 @@
-package exp
-
 case class ExpInternalException(handleWith: String) extends Exception
 case class InterpreterFailedException(msg: String) extends Exception
 

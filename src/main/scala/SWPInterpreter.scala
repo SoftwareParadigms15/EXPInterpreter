@@ -1,5 +1,3 @@
-package exp
-
 object SWPInterpreter {
 
   def main(args: Array[String]) {
