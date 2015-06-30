@@ -1,3 +1,4 @@
+import exp.SWPInterpreter
 import org.scalatest.FunSuite
 import scala.util.parsing.combinator._
 
