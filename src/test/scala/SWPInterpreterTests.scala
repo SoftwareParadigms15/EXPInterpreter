@@ -1,4 +1,4 @@
-import exp.SWPInterpreter
+import SWPInterpreter
 import org.scalatest.FunSuite
 import scala.util.parsing.combinator._
 
