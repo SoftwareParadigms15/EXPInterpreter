@@ -1,3 +1,5 @@
+package exp
+
 case class Program(functionEnvironment: List[FunctionDeclaration], main:Expression)
 
 case class FunctionDeclaration(name:String, params: List[String], body: Expression)

@@ -1,7 +1,6 @@
-import java.io.Serializable
+package exp
 
 import scala.util.parsing.combinator._
-import scala.util.parsing.combinator.Parsers
 
 class ExpParser extends JavaTokenParsers {
 
