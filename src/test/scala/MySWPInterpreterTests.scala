@@ -1,4 +1,3 @@
-import SWPInterpreter
 import org.scalatest.FunSuite
 
 class MySWPInterpreterTests extends FunSuite {
