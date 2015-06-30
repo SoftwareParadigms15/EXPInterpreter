@@ -1,6 +1,4 @@
-import SWPInterpreter
 import org.scalatest.FunSuite
-import scala.util.parsing.combinator._
 
 class SWPInterpreterTests extends FunSuite {
 
