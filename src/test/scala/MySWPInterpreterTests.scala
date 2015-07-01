@@ -579,4 +579,17 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("big num") {
+    val prog = """
+   {
+    foo(x) = if eq?(x,[]) then [] else build(bar(first(x)), foo(rest(x)));
+    bar(x) = pow(x,mult(2,x));
+    pow(x,y) = if eq?(y,0) then 1 else mult(x, pow(x, sub(y,1)))
+   }
+   foo([3,5,10])
+               """
+    assertResult("[729,9765625,7766279631452241920]") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
