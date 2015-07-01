@@ -592,4 +592,15 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("eq type mismatch") {
+    val prog = """
+   {
+    func(x,y) = if eq?(x,y) then 1 else 0
+   }
+   func(0,[])
+               """
+    assertResult("Uncaught exception TypeMismatch!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }

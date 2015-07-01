@@ -65,7 +65,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
-  def predEq(a: Value, b: Value) = a == b
+  def predEq(a: Value, b: Value) = (a,b) match {
+    case (ValInt(x), ValInt(y)) => x == y
+    case (ValList(x), ValList(y)) => x == y
+    case (_,_) => throw ExpInternalException("TypeMismatch")
+  }
 
   def predLt(a: Value, b: Value) = (a,b) match {
     case (ValInt(v1), ValInt(v2)) => v1 < v2
