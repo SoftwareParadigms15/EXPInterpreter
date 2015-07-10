@@ -625,4 +625,14 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("multilist build") {
+    val prog = """
+   {
+   }
+   build([1,1],[2,2])
+               """
+    assertResult("[[1,1],2,2]") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
