@@ -66,6 +66,10 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def builtinMod(a:Value, b:Value) = (a,b) match {
+    case (ValInt(x), ValInt(y)) => ValInt(x % y)
+  }
+
   def predEq(a: Value, b: Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => x == y
     case (ValList(x), ValList(y)) => x == y
@@ -220,6 +224,9 @@ object Interpreter {
     case ExpFunction("len", args: List[Expression]) => builtinLen(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("reverse", args: List[Expression]) => builtinReverse(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction("mod", args: List[Expression]) => builtinMod(interpret_main(functionEnvironment, variableEnvironment, args.head),
+      interpret_main(functionEnvironment, variableEnvironment, args(1)))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
   }

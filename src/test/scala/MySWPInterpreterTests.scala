@@ -635,4 +635,14 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("mod") {
+    val prog = """
+   {
+   }
+   mod(3,2)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
