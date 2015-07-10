@@ -81,6 +81,17 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def predIs0(a: Value) = a match {
+    case ValInt(x) => x == 0
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
+  def predIs1(a: Value) = a match {
+    case ValInt(x) => x == 1
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
+
   def interpret(functionEnvironment: Map[FunctionName, FunctionDeclaration],
                 variableEnvironment: Map[VariableName, Value],
                 expression: Expression): Value = {
@@ -133,6 +144,20 @@ object Interpreter {
 
     case ExpCond(Predicate("gt", params),e1,e2) => {
       if (predGt(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
+        interpret_main(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret_main(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("is0", params),e1,e2) => {
+      if (predIs0(interpret_main(functionEnvironment, variableEnvironment, params.head)))
+        interpret_main(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret_main(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("is1", params),e1,e2) => {
+      if (predIs1(interpret_main(functionEnvironment, variableEnvironment, params.head)))
         interpret_main(functionEnvironment, variableEnvironment, e1)
       else
         interpret_main(functionEnvironment, variableEnvironment, e2)

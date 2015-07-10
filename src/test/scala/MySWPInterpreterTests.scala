@@ -603,4 +603,26 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("is0") {
+    val prog = """
+   {
+    func(x) = if is0?(x) then 1 else 0
+   }
+   func(0)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("is1") {
+    val prog = """
+   {
+    func(x) = if is1?(x) then 1 else 0
+   }
+   func(1)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
