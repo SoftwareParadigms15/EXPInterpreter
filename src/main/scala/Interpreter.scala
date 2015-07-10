@@ -41,8 +41,8 @@ object Interpreter {
   }
 
   def builtinBuild(a: Value, b: Value) = (a, b) match {
-    case (ValInt(iv), ValList(lv)) => ValList(ValInt(iv)::lv)
-    case (ValList(iv), ValList(lv)) => ValList(ValList(iv)::lv)
+    case (ValInt(iv), ValList(lv)) => ValList(a::lv)
+    case (ValList(iv), ValList(lv)) => ValList(a::lv)
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
