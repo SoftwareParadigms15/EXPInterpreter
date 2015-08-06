@@ -1,3 +1,5 @@
+package net.thewalkingthread.exp.interpreter
+
 case class ExpInternalException(handleWith: String) extends Exception
 case class InterpreterFailedException(msg: String) extends Exception
 

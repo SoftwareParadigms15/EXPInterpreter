@@ -1,3 +1,5 @@
+package net.thewalkingthread.exp.interpreter
+
 import scala.util.parsing.combinator._
 
 class ExpParser extends JavaTokenParsers {

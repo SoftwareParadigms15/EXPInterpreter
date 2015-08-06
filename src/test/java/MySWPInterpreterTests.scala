@@ -1,3 +1,4 @@
+import net.thewalkingthread.exp.interpreter.SWPInterpreter
 import org.scalatest.FunSuite
 
 class MySWPInterpreterTests extends FunSuite {
