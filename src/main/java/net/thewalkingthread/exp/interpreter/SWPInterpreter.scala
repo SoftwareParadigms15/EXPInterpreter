@@ -1,3 +1,5 @@
+package net.thewalkingthread.exp.interpreter
+
 object SWPInterpreter {
 
   def main(args: Array[String]) {
