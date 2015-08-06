@@ -41,7 +41,8 @@ object Interpreter {
   }
 
   def builtinBuild(a: Value, b: Value) = (a, b) match {
-    case (ValInt(iv), ValList(lv)) => ValList(ValInt(iv)::lv)
+    case (ValInt(iv), ValList(lv)) => ValList(a::lv)
+    case (ValList(iv), ValList(lv)) => ValList(a::lv)
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
@@ -65,6 +66,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def builtinMod(a:Value, b:Value) = (a,b) match {
+    case (ValInt(x), ValInt(y)) => ValInt(x % y)
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
   def predEq(a: Value, b: Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => x == y
     case (ValList(x), ValList(y)) => x == y
@@ -80,6 +86,17 @@ object Interpreter {
     case (ValInt(v1), ValInt(v2)) => v1 > v2
     case _ => throw ExpInternalException("TypeMismatch")
   }
+
+  def predIs0(a: Value) = a match {
+    case ValInt(x) => x == 0
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
+  def predIs1(a: Value) = a match {
+    case ValInt(x) => x == 1
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
 
   def interpret(functionEnvironment: Map[FunctionName, FunctionDeclaration],
                 variableEnvironment: Map[VariableName, Value],
@@ -133,6 +150,20 @@ object Interpreter {
 
     case ExpCond(Predicate("gt", params),e1,e2) => {
       if (predGt(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
+        interpret_main(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret_main(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("is0", params),e1,e2) => {
+      if (predIs0(interpret_main(functionEnvironment, variableEnvironment, params.head)))
+        interpret_main(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret_main(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("is1", params),e1,e2) => {
+      if (predIs1(interpret_main(functionEnvironment, variableEnvironment, params.head)))
         interpret_main(functionEnvironment, variableEnvironment, e1)
       else
         interpret_main(functionEnvironment, variableEnvironment, e2)
@@ -194,6 +225,9 @@ object Interpreter {
     case ExpFunction("len", args: List[Expression]) => builtinLen(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("reverse", args: List[Expression]) => builtinReverse(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction("mod", args: List[Expression]) => builtinMod(interpret_main(functionEnvironment, variableEnvironment, args.head),
+      interpret_main(functionEnvironment, variableEnvironment, args(1)))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
   }
