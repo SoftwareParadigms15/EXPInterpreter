@@ -68,6 +68,7 @@ object Interpreter {
 
   def builtinMod(a:Value, b:Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x % y)
+    case _ => throw ExpInternalException("TypeMismatch")
   }
 
   def predEq(a: Value, b: Value) = (a,b) match {
