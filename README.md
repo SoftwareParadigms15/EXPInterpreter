@@ -28,7 +28,8 @@ Following built-in functions are supported:
  - fak(x)         (returns factorial of x)
  - sqrt(x)        (returns the square root of x, floors if necessary)
  - abs(x)         (returns the absolute value of x)
- - random(x)       (returns a random number between 0 and x)
+ - random(x)      (returns a random number between 0 and x)
+ - gcd(x,y)       (returns the greatest common divisor of x and y)
 
 Following built-in conditionals are supported (all conditionals support lists and integers):
  - eq?(x,y)       (true if x and y have the same value)

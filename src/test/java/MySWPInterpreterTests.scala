@@ -725,5 +725,15 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("gcd") {
+    val prog = """
+   {
+   }
+   gcd(2016, 420)
+               """
+    assertResult("84") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 
 }

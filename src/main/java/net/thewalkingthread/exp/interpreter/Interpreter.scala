@@ -1,5 +1,7 @@
 package net.thewalkingthread.exp.interpreter
 
+import java.math.BigInteger
+
 import scala.util.Random
 
 case class ExpInternalException(handleWith: String) extends Exception
@@ -104,7 +106,17 @@ object Interpreter {
 
   def builtinRand(a: Value) = a match {
     case ValInt(x) if x < Int.MaxValue => ValInt(Random.nextInt(x.toInt))
-    case ValInt(_) => throw ExpInternalException("NumberTooBig")
+    case ValInt(_) => throw ExpInternalException("Value too big in function %s" format "rand")
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
+  def builtinGcd(a:Value, b:Value) = (a,b) match {
+    case (ValInt(x), ValInt(y)) => {
+      try ValInt(BigInteger.valueOf(x).gcd(BigInteger.valueOf(y)).longValueExact())
+      catch {
+        case e: ArithmeticException => throw ExpInternalException("Value too big in function %s" format "gcd")
+      }
+    }
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
@@ -144,7 +156,7 @@ object Interpreter {
           case Some(n) => n
           case None => constants get name match {
             case Some(n) => n
-            case None => throw new InterpreterFailedException("Variable not declared: " + name)
+            case None => throw InterpreterFailedException("Variable not declared: " + name)
           }
         }
 
@@ -285,6 +297,9 @@ object Interpreter {
 
     case ExpFunction("rand", args: List[Expression]) => builtinRand(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: " + funcIdentifier)
+    case ExpFunction("gcd", args: List[Expression]) => builtinGcd(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
+
+    case ExpFunction(funcIdentifier, _) => throw InterpreterFailedException("Function not declared: " + funcIdentifier)
   }
 }
