@@ -34,8 +34,14 @@ Following built-in conditionals are supported (all conditionals support lists an
  - eq?(x,y)       (true if x and y have the same value)
  - lt?(x,y)       (true if x < y)
  - gt?(x,y)       (true if y > x)
- 
+
 User defined functions and exceptions are also supported. Built-in functions can be overloaded by user defined functions if they have the same name. In this case, always the user defined function will be used.
+
+Following built-in constant values are provided:
+ - INTMIN         (Minimum integer value)
+ - INTMAX         (Maximum integer value)
+
+User defined variables automatically override constants if they hav the same name
 
 ## Examples
 

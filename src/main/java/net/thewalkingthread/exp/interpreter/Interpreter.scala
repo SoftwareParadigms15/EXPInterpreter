@@ -11,6 +11,12 @@ object Interpreter {
   type FunctionName = String
   type VariableName = String
 
+  //map for constants
+  val constants = Map[String, Value](
+    "INTMAX" -> ValInt(Int.MaxValue),
+    "INTMIN" -> ValInt(Int.MinValue)
+  )
+
   def builtinPlus(a: Value, b:Value) = (a, b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x + y)
     case _ => throw ExpInternalException("TypeMismatch")
@@ -144,9 +150,12 @@ object Interpreter {
                 variableEnvironment: Map[VariableName, Value],
                 expression: Expression): Value = expression match {
 
-    case ExpVariable(name) => variableEnvironment.get(name) match {
+    case ExpVariable(name) => variableEnvironment get name match {
       case Some(n) => n
-      case None => throw new InterpreterFailedException("Variable not declared: "+name)
+      case None => constants get name match {
+        case Some(n) => n
+        case None => throw new InterpreterFailedException("Variable not declared: "+name)
+      }
     }
 
     case ExpInt(v) => ValInt(v)

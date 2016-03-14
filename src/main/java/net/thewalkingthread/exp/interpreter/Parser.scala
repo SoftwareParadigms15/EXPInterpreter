@@ -25,7 +25,7 @@ class ExpParser extends JavaTokenParsers {
   //Terminale
   val int: Parser[ExpInt] = "(-?[1-9][0-9]*)|0".r ^^ { x => ExpInt(x.toInt)}
 
-  private val identifier : Parser[String] = "[a-z][a-zA-Z0-9]*".r
+  val identifier : Parser[String] = "[a-zA-Z][a-zA-Z0-9]*".r
 
   val variable: Parser[ExpVariable] = identifier ^^ {x => ExpVariable(x)}
 

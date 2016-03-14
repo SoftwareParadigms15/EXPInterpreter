@@ -26,8 +26,6 @@ case class ValInt(v: Long) extends Value
 case class ValList(v: List[Value]) extends Value
 case class ValUncaughtException(v: String) extends Value
 
-
-
 object PrettyPrinter {
   def print(value: Value):String = value match {
     case ValInt(v) => v.toString

@@ -705,4 +705,14 @@ class MySWPInterpreterTests extends FunSuite {
     val res = SWPInterpreter.evaluateProgram(prog).toInt
     assert(res <= 10 && res >= 0)
   }
+  test("intConstants") {
+    val prog = """
+   {
+   }
+   plus(INTMIN, INTMAX)
+               """
+    assertResult("-1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
