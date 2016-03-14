@@ -21,7 +21,7 @@ object Interpreter {
 
   def builtinMult(a: Value, b:Value) = (a, b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x * y)
-    case _ => println((a, b)); throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("TypeMismatch")
   }
 
   def builtinDiv(a: Value, b:Value) = (a, b) match {
