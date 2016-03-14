@@ -73,7 +73,7 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
-  def builtinFak(a: Value): ValInt = {
+  def builtinFak(a: Value) = {
     def factorial(x: Long, res: Long): Long = {
       if (x == 0 || x == 1) res
       else factorial(x - 1, res * x)
@@ -82,6 +82,11 @@ object Interpreter {
       case ValInt(x) => ValInt(factorial(x, 1))
       case _ => throw ExpInternalException("TypeMismatch")
     }
+  }
+
+  def buitinSqrt(a: Value) = a match {
+    case ValInt(x) => ValInt(Math.sqrt(x).floor.toLong)
+    case _ => throw ExpInternalException("TypeMismatch")
   }
 
   def predEq(a: Value, b: Value) = (a,b) match {
@@ -244,6 +249,8 @@ object Interpreter {
 
     case ExpFunction("fak", args: List[Expression]) => builtinFak(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: "+funcIdentifier)
+    case ExpFunction("sqrt", args: List[Expression]) => buitinSqrt(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: " + funcIdentifier)
   }
 }

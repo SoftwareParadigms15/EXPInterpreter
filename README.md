@@ -24,8 +24,9 @@ Following built-in functions are supported:
  - inc(x)         (increase x by one)
  - dec(x)         (decrease x by one)
  - reverse(x)     (returns list x in reverse order)
- - len(x)         (retunrns the length of list x as an integer)
+ - len(x)         (returns the length of list x as an integer)
  - fak(x)         (returns factorial of x)
+ - sqrt(x)        (returns the square root of x, floors if necessary)
 
 Following built-in conditionals are supported (all conditionals support lists and integers):
  - eq?(x,y)       (true if x and y have the same value)
