@@ -21,66 +21,66 @@ object Interpreter {
 
   def builtinPlus(a: Value, b:Value) = (a, b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x + y)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "plus")
   }
 
   def builtinMinus(a: Value, b:Value) = (a, b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x - y)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "minus")
   }
 
   def builtinMult(a: Value, b:Value) = (a, b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x * y)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "mult")
   }
 
   def builtinDiv(a: Value, b:Value) = (a, b) match {
-    case (ValInt(_), ValInt(0)) => throw ExpInternalException("DivByZero")
+    case (ValInt(_), ValInt(0)) => throw ExpInternalException("Division by zero")
     case (ValInt(x), ValInt(y)) => ValInt(x / y)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "div")
   }
 
   def builtinFirst(args: Value) = args match {
-    case ValList(Nil) => throw ExpInternalException("EmptyList")
+    case ValList(Nil) => throw ExpInternalException("Empty list at %s" format "first")
     case ValList(v) => v.head
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "first")
   }
 
   def builtinRest(args: Value) = args match {
-    case ValList(Nil) => throw ExpInternalException("EmptyList")
+    case ValList(Nil) => throw ExpInternalException("Empty list at %s" format "rest")
     case ValList(v::vs) => ValList(vs)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "rest")
   }
 
   def builtinBuild(a: Value, b: Value) = (a, b) match {
     case (ValInt(iv), ValList(lv)) => ValList(a::lv)
     case (ValList(iv), ValList(lv)) => ValList(a::lv)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "build")
   }
 
   def builtinInc(a: Value) = a match {
     case ValInt(x) => ValInt(x+1)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "inc")
   }
 
   def builtinDec(a: Value) = a match {
     case ValInt(x) => ValInt(x-1)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "dec")
   }
 
   def builtinLen(a: Value) = a match {
     case ValList(x) => ValInt(x.length)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "len")
   }
 
   def builtinReverse(a: Value) = a match {
     case ValList(x) => ValList(x.reverse)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "reverse")
   }
 
   def builtinMod(a:Value, b:Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => ValInt(x % y)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "mod")
   }
 
   def builtinFak(a: Value) = {
@@ -91,56 +91,56 @@ object Interpreter {
     a match {
       case ValInt(x) if x < 21 => ValInt(factorial(x, 1))
       case ValInt(_) => throw ExpInternalException("Value too big in function %s" format "fak")
-      case _ => throw ExpInternalException("TypeMismatch")
+      case _ => throw ExpInternalException("Type mismatch at %s" format "fak")
     }
   }
 
   def buitinSqrt(a: Value) = a match {
     case ValInt(x) => ValInt(Math.sqrt(x).floor.toLong)
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "sqrt")
   }
 
   def builtinAbs(a: Value) = a match {
     case ValInt(x) => ValInt(Math.abs(x))
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "abs")
   }
 
   def builtinRand(a: Value) = a match {
     case ValInt(x) if x < Int.MaxValue => ValInt(Random.nextInt(x.toInt))
     case ValInt(_) => throw ExpInternalException("Value too big in function %s" format "rand")
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "rand")
   }
 
   def builtinGcd(a:Value, b:Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) if x < Long.MaxValue && y < Long.MaxValue => ValInt(BigInteger.valueOf(x).gcd(BigInteger.valueOf(y)).longValue())
     case (ValInt(_), ValInt(_)) => throw ExpInternalException("Value too big in function %s" format "gcd")
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "gcd")
   }
 
   def predEq(a: Value, b: Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => x == y
     case (ValList(x), ValList(y)) => x == y
-    case (_,_) => throw ExpInternalException("TypeMismatch")
+    case (_,_) => throw ExpInternalException("Type mismatch at %s" format "eq")
   }
 
   def predLt(a: Value, b: Value) = (a,b) match {
     case (ValInt(v1), ValInt(v2)) => v1 < v2
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "lt")
   }
 
   def predGt(a: Value, b: Value) = (a,b) match {
     case (ValInt(v1), ValInt(v2)) => v1 > v2
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "gt")
   }
 
   def predIs0(a: Value) = a match {
     case ValInt(x) => x == 0
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "is0")
   }
 
   def predIs1(a: Value) = a match {
     case ValInt(x) => x == 1
-    case _ => throw ExpInternalException("TypeMismatch")
+    case _ => throw ExpInternalException("Type mismatch at %s" format "is1")
   }
 
 
