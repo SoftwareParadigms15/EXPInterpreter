@@ -89,6 +89,11 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
+  def builtinAbs(a: Value) = a match {
+    case ValInt(x) => ValInt(Math.abs(x))
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
   def predEq(a: Value, b: Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => x == y
     case (ValList(x), ValList(y)) => x == y
@@ -250,6 +255,8 @@ object Interpreter {
     case ExpFunction("fak", args: List[Expression]) => builtinFak(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("sqrt", args: List[Expression]) => buitinSqrt(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction("abs", args: List[Expression]) => builtinAbs(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: " + funcIdentifier)
   }
