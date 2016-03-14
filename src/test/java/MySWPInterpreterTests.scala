@@ -715,4 +715,15 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("fewArgs") {
+    val prog = """
+   {
+   }
+   plus(INTMIN)
+               """
+    assertResult("Interpretation failed! Too few args for func plus. Only 1 provided!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+
 }

@@ -24,7 +24,10 @@ object SWPInterpreter {
       PrettyPrinter.print(result)
     } catch {
       case InterpreterFailedException(msg) => "Interpretation failed! "+msg
-      case e: Exception => e.getMessage
+      case ExpInternalException(msg) => "Uncaught exception %s!".format(msg)
+      case e: IndexOutOfBoundsException => "Too few arguments"
+      case e: RuntimeException => e.getMessage
+      case e: Exception => e.getClass.getName + ": " + e.getMessage
       case e: StackOverflowError => "Stackoverflow! Maybe infinite recursion."
     }
   }

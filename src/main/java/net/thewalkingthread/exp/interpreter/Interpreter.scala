@@ -139,143 +139,151 @@ object Interpreter {
                 variableEnvironment: Map[VariableName, Value],
                 expression: Expression): Value = {
     try {
-      interpret_main(functionEnvironment, variableEnvironment, expression)
-    } catch {
-      case ExpInternalException(exceptId) => ValUncaughtException(exceptId)
-    }
-
-  }
-
-  def interpret_main(functionEnvironment: Map[FunctionName, FunctionDeclaration],
-                variableEnvironment: Map[VariableName, Value],
-                expression: Expression): Value = expression match {
-
-    case ExpVariable(name) => variableEnvironment get name match {
-      case Some(n) => n
-      case None => constants get name match {
-        case Some(n) => n
-        case None => throw new InterpreterFailedException("Variable not declared: "+name)
-      }
-    }
-
-    case ExpInt(v) => ValInt(v)
-
-    case ExpList(v) => ValList(v.map(ex => interpret_main(functionEnvironment, variableEnvironment, ex)))
-
-    case ExpFunction(funcIdentifier, args: List[Expression]) => {
-      val fnDeclaration = functionEnvironment get funcIdentifier
-      fnDeclaration match {
-        case Some(FunctionDeclaration(_, params, body)) => {
-          val interpretedArgs = args.map(x => interpret_main(functionEnvironment, variableEnvironment, x))
-          val newEnv = params.zip(interpretedArgs).toMap
-          interpret_main(functionEnvironment, newEnv, body)
+      expression match {
+        case ExpVariable(name) => variableEnvironment get name match {
+          case Some(n) => n
+          case None => constants get name match {
+            case Some(n) => n
+            case None => throw new InterpreterFailedException("Variable not declared: " + name)
+          }
         }
-        case None => interpret_builtin(functionEnvironment, variableEnvironment, expression.asInstanceOf[ExpFunction])
-      }
-    }
 
-    case ExpCond(Predicate("eq", params),e1,e2) => {
-      if (predEq(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
-        interpret_main(functionEnvironment, variableEnvironment, e1)
-      else
-        interpret_main(functionEnvironment, variableEnvironment, e2)
-    }
+        case ExpInt(v) => ValInt(v)
 
-    case ExpCond(Predicate("lt", params),e1,e2) => {
-      if (predLt(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
-        interpret_main(functionEnvironment, variableEnvironment, e1)
-      else
-        interpret_main(functionEnvironment, variableEnvironment, e2)
-    }
+        case ExpList(v) => ValList(v.map(ex => interpret(functionEnvironment, variableEnvironment, ex)))
 
-    case ExpCond(Predicate("gt", params),e1,e2) => {
-      if (predGt(interpret_main(functionEnvironment, variableEnvironment, params.head), interpret_main(functionEnvironment, variableEnvironment, params(1))))
-        interpret_main(functionEnvironment, variableEnvironment, e1)
-      else
-        interpret_main(functionEnvironment, variableEnvironment, e2)
-    }
+        case ExpFunction(funcIdentifier, args: List[Expression]) => {
+          val fnDeclaration = functionEnvironment get funcIdentifier
+          fnDeclaration match {
+            case Some(FunctionDeclaration(_, params, body)) => {
+              val interpretedArgs = args.map(x => interpret(functionEnvironment, variableEnvironment, x))
+              val newEnv = params.zip(interpretedArgs).toMap
+              interpret(functionEnvironment, newEnv, body)
+            }
+            case None => interpret_builtin(functionEnvironment, variableEnvironment, expression.asInstanceOf[ExpFunction])
+          }
+        }
 
-    case ExpCond(Predicate("is0", params),e1,e2) => {
-      if (predIs0(interpret_main(functionEnvironment, variableEnvironment, params.head)))
-        interpret_main(functionEnvironment, variableEnvironment, e1)
-      else
-        interpret_main(functionEnvironment, variableEnvironment, e2)
-    }
+        case ExpCond(_, _, _) => interpret_cond(functionEnvironment, variableEnvironment, expression.asInstanceOf[ExpCond])
 
-    case ExpCond(Predicate("is1", params),e1,e2) => {
-      if (predIs1(interpret_main(functionEnvironment, variableEnvironment, params.head)))
-        interpret_main(functionEnvironment, variableEnvironment, e1)
-      else
-        interpret_main(functionEnvironment, variableEnvironment, e2)
-    }
-
-    case ExpCond(Predicate(func, _),_,_) => throw new InterpreterFailedException("Condition not declared: "+func)
-
-    case ExpTryCatch(tryExpression: Expression, handlers: List[Handler]) => {
-      try {
-        interpret_main(functionEnvironment, variableEnvironment, tryExpression)
-      } catch {
-        case ExpInternalException(handleWith) => {
-          for (h <- handlers) {
-            if (h.exceptionId == handleWith || h.exceptionId == "_") {
-              return interpret_main(functionEnvironment, variableEnvironment, h.exp)
+        case ExpTryCatch(tryExpression: Expression, handlers: List[Handler]) => {
+          try {
+            interpret(functionEnvironment, variableEnvironment, tryExpression)
+          } catch {
+            case ExpInternalException(handleWith) => {
+              for (h <- handlers) {
+                if (h.exceptionId == handleWith || h.exceptionId == "_") {
+                  return interpret(functionEnvironment, variableEnvironment, h.exp)
+                }
+              }
+              throw ExpInternalException(handleWith)
             }
           }
-          throw ExpInternalException(handleWith)
+        }
+
+        case ExpThrow(exceptionId) => throw ExpInternalException(exceptionId)
+
+        case _ => throw new InterpreterFailedException("Unknown expression")
+      }
+    } catch {
+      //case ExpInternalException(exceptId) => ValUncaughtException(exceptId)
+      case e: IndexOutOfBoundsException => {
+        expression match {
+          case ExpFunction(name, args) => throw new InterpreterFailedException("Too few args for func %s. Only %s provided!".format(name,
+            args
+            .size))
+          case _ => throw e
         }
       }
     }
+  }
 
-    case ExpThrow(exceptionId) => throw ExpInternalException(exceptionId)
+  def interpret_cond(functionEnvironment: Map[FunctionName, FunctionDeclaration],
+                     variableEnvironment: Map[VariableName, Value],
+                     expression: ExpCond): Value = expression match {
+    case ExpCond(Predicate("eq", params), e1, e2) => {
+      if (predEq(interpret(functionEnvironment, variableEnvironment, params.head), interpret(functionEnvironment, variableEnvironment, params(1))))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
 
-    case _ => throw new InterpreterFailedException("Unknown expression")
+    case ExpCond(Predicate("lt", params), e1, e2) => {
+      if (predLt(interpret(functionEnvironment, variableEnvironment, params.head), interpret(functionEnvironment, variableEnvironment, params(1))))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("gt", params), e1, e2) => {
+      if (predGt(interpret(functionEnvironment, variableEnvironment, params.head), interpret(functionEnvironment, variableEnvironment, params(1))))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("is0", params), e1, e2) => {
+      if (predIs0(interpret(functionEnvironment, variableEnvironment, params.head)))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("is1", params), e1, e2) => {
+      if (predIs1(interpret(functionEnvironment, variableEnvironment, params.head)))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate(func, _), _, _) => throw new InterpreterFailedException("Condition not declared: " + func)
   }
 
   def interpret_builtin(functionEnvironment: Map[FunctionName, FunctionDeclaration],
-                     variableEnvironment: Map[VariableName, Value],
-                     expression: ExpFunction): Value = expression match {
+                        variableEnvironment: Map[VariableName, Value],
+                        expression: ExpFunction): Value = expression match {
 
-    case ExpFunction("plus", args: List[Expression]) => builtinPlus(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
-    case ExpFunction("add", args: List[Expression]) => builtinPlus(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("plus", args: List[Expression]) => builtinPlus(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("add", args: List[Expression]) => builtinPlus(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
 
-    case ExpFunction("minus", args: List[Expression]) => builtinMinus(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
-    case ExpFunction("sub", args: List[Expression]) => builtinMinus(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("minus", args: List[Expression]) => builtinMinus(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("sub", args: List[Expression]) => builtinMinus(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
 
-    case ExpFunction("mult", args: List[Expression]) => builtinMult(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("mult", args: List[Expression]) => builtinMult(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
 
-    case ExpFunction("div", args: List[Expression]) => builtinDiv(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("div", args: List[Expression]) => builtinDiv(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
 
-    case ExpFunction("first", args: List[Expression]) => builtinFirst(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("first", args: List[Expression]) => builtinFirst(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("rest", args: List[Expression]) => builtinRest(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("rest", args: List[Expression]) => builtinRest(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("build", args: List[Expression]) => builtinBuild(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("build", args: List[Expression]) => builtinBuild(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
 
-    case ExpFunction("inc", args: List[Expression]) => builtinInc(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("inc", args: List[Expression]) => builtinInc(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("dec", args: List[Expression]) => builtinDec(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("dec", args: List[Expression]) => builtinDec(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("len", args: List[Expression]) => builtinLen(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("len", args: List[Expression]) => builtinLen(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("reverse", args: List[Expression]) => builtinReverse(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("reverse", args: List[Expression]) => builtinReverse(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("mod", args: List[Expression]) => builtinMod(interpret_main(functionEnvironment, variableEnvironment, args.head),
-      interpret_main(functionEnvironment, variableEnvironment, args(1)))
+    case ExpFunction("mod", args: List[Expression]) => builtinMod(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
 
-    case ExpFunction("fak", args: List[Expression]) => builtinFak(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("fak", args: List[Expression]) => builtinFak(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("sqrt", args: List[Expression]) => buitinSqrt(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("sqrt", args: List[Expression]) => buitinSqrt(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("abs", args: List[Expression]) => builtinAbs(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("abs", args: List[Expression]) => builtinAbs(interpret(functionEnvironment, variableEnvironment, args.head))
 
-    case ExpFunction("rand", args: List[Expression]) => builtinRand(interpret_main(functionEnvironment, variableEnvironment, args.head))
+    case ExpFunction("rand", args: List[Expression]) => builtinRand(interpret(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: " + funcIdentifier)
   }
