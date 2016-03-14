@@ -35,6 +35,8 @@ Following built-in conditionals are supported (all conditionals support lists an
  - eq?(x,y)       (true if x and y have the same value)
  - lt?(x,y)       (true if x < y)
  - gt?(x,y)       (true if y > x)
+ - is0?(x)        (true if x = 0)
+ - is1?(1)        (true if x = 1)
 
 User defined functions and exceptions are also supported. Built-in functions can be overloaded by user defined functions if they have the same name. In this case, always the user defined function will be used.
 
