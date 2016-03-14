@@ -111,12 +111,8 @@ object Interpreter {
   }
 
   def builtinGcd(a:Value, b:Value) = (a,b) match {
-    case (ValInt(x), ValInt(y)) => {
-      try ValInt(BigInteger.valueOf(x).gcd(BigInteger.valueOf(y)).longValueExact())
-      catch {
-        case e: ArithmeticException => throw ExpInternalException("Value too big in function %s" format "gcd")
-      }
-    }
+    case (ValInt(x), ValInt(y)) if x < Long.MaxValue && y < Long.MaxValue => ValInt(BigInteger.valueOf(x).gcd(BigInteger.valueOf(y)).longValue())
+    case (ValInt(_), ValInt(_)) => throw ExpInternalException("Value too big in function %s" format "gcd")
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
