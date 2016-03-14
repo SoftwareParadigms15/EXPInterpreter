@@ -1,5 +1,7 @@
 package net.thewalkingthread.exp.interpreter
 
+import scala.util.Random
+
 case class ExpInternalException(handleWith: String) extends Exception
 case class InterpreterFailedException(msg: String) extends Exception
 
@@ -91,6 +93,12 @@ object Interpreter {
 
   def builtinAbs(a: Value) = a match {
     case ValInt(x) => ValInt(Math.abs(x))
+    case _ => throw ExpInternalException("TypeMismatch")
+  }
+
+  def builtinRand(a: Value) = a match {
+    case ValInt(x) if x < Int.MaxValue => ValInt(Random.nextInt(x.toInt))
+    case ValInt(_) => throw ExpInternalException("NumberTooBig")
     case _ => throw ExpInternalException("TypeMismatch")
   }
 
@@ -257,6 +265,8 @@ object Interpreter {
     case ExpFunction("sqrt", args: List[Expression]) => buitinSqrt(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("abs", args: List[Expression]) => builtinAbs(interpret_main(functionEnvironment, variableEnvironment, args.head))
+
+    case ExpFunction("rand", args: List[Expression]) => builtinRand(interpret_main(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction(funcIdentifier, _) => throw new InterpreterFailedException("Function not declared: " + funcIdentifier)
   }

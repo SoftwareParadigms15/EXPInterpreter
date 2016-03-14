@@ -696,4 +696,13 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("rand") {
+    val prog = """
+   {
+   }
+   rand(10)
+               """
+    val res = SWPInterpreter.evaluateProgram(prog).toInt
+    assert(res <= 10 && res >= 0)
+  }
 }
