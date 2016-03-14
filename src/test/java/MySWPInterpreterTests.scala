@@ -646,4 +646,24 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("fakVal") {
+    val prog = """
+   {
+   }
+   fak(5)
+               """
+    assertResult("120") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("fak0") {
+    val prog = """
+   {
+   }
+   fak(0)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 }
