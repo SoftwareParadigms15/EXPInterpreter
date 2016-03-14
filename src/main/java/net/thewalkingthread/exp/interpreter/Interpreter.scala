@@ -89,7 +89,8 @@ object Interpreter {
       else factorial(x - 1, res * x)
     }
     a match {
-      case ValInt(x) => ValInt(factorial(x, 1))
+      case ValInt(x) if x < 21 => ValInt(factorial(x, 1))
+      case ValInt(_) => throw ExpInternalException("Value too big in function %s" format "fak")
       case _ => throw ExpInternalException("TypeMismatch")
     }
   }
