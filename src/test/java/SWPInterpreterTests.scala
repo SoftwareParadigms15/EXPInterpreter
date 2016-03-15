@@ -47,7 +47,7 @@ class SWPInterpreterTests extends FunSuite {
     }
     bar(5)
                """
-    assertResult("Uncaught exception DivByZero!"){
+    assertResult("Uncaught exception DivByZero at function div!"){
       SWPInterpreter.evaluateProgram(prog)
     }
 

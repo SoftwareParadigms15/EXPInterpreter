@@ -47,7 +47,7 @@ class MySWPInterpreterTests extends FunSuite {
     }
     bar(5)
                """
-    assertResult("Uncaught exception DivByZero!"){
+    assertResult("Uncaught exception DivByZero at function div!"){
       SWPInterpreter.evaluateProgram(prog)
     }
 
@@ -162,7 +162,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = build(a,b)}
     foo(245,1)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function build!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -171,7 +171,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = build(a,b)}
     foo([245],1)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function build!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -180,7 +180,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = build(a,div(a,b))}
     foo([245],0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -189,7 +189,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = build(a,div(8,b))}
     foo([245],0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -198,7 +198,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = build(a,div(b,0))}
     foo(245,2)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -207,7 +207,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = rest([0,1,div(a,b)])}
     foo([245],0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -216,7 +216,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = rest([0,1,div(a,b)])}
     foo(245,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -253,7 +253,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a) = first(a) }
     foo(1)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function first!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -262,7 +262,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a) = first(a) }
     foo([])
                """
-    assertResult("Uncaught exception EmptyList!") {
+    assertResult("Uncaught exception EmptyList at function first!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -352,7 +352,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a) = rest(a) }
     foo(1)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function rest!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -361,7 +361,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a) = rest(a) }
     foo([])
                """
-    assertResult("Uncaught exception EmptyList!") {
+    assertResult("Uncaught exception EmptyList at function rest!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -370,7 +370,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = div(a,b) }
     foo(12,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -379,7 +379,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = plus([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -388,7 +388,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = rest([0,1,div(a,b),plus([],[])])}
     foo(245,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -397,7 +397,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = first([0,1,plus([],[]),div(a,b),34])}
     foo(245,0)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function plus!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -406,7 +406,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = minus([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -415,7 +415,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = mult([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -424,7 +424,7 @@ class MySWPInterpreterTests extends FunSuite {
     {foo(a,b) = div([1],div(a,b)) }
     foo(12,0)
                """
-    assertResult("Uncaught exception DivByZero!") {
+    assertResult("Uncaught exception DivByZero at function div!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -451,7 +451,7 @@ class MySWPInterpreterTests extends FunSuite {
     {}
     inc(inc([1]))
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function inc!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -460,7 +460,7 @@ class MySWPInterpreterTests extends FunSuite {
     {}
     dec(dec([2]))
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function dec!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -567,7 +567,7 @@ class MySWPInterpreterTests extends FunSuite {
    {}
    len(2)
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function len!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -600,7 +600,7 @@ class MySWPInterpreterTests extends FunSuite {
    }
    func(0,[])
                """
-    assertResult("Uncaught exception TypeMismatch!") {
+    assertResult("Uncaught exception TypeMismatch at function eq!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
