@@ -41,4 +41,6 @@ object PrettyPrinter {
     }
     case ValUncaughtException(v) => "Uncaught exception %s!".format(v)
   }
+
+  def formatError(e: String): String = e.replace("\n", "").replaceAll(".*failure:(.+?)found.*", "$1 found").trim
 }

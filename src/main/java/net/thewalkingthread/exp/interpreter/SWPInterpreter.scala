@@ -25,7 +25,8 @@ object SWPInterpreter {
         val result = Interpreter.interpret(funcs.map(x=>(x.name, x)).toMap, Map(), exp)
         PrettyPrinter.print(result)
       } else  {
-        throw new InterpreterFailedException(parserResult.toString)
+        val errorMsg = PrettyPrinter.formatError(parserResult.toString)
+        throw new InterpreterFailedException(errorMsg)
       }
     } catch {
       case InterpreterFailedException(msg) => "Interpretation failed! "+msg
