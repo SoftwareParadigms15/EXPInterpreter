@@ -2,7 +2,7 @@ package net.thewalkingthread.exp.interpreter
 
 case class Program(functionEnvironment: List[FunctionDeclaration], main:Expression)
 
-case class FunctionDeclaration(name:String, params: List[String], body: Expression)
+case class FunctionDeclaration(name:String, params: List[String], body: Expression, variableCount: Int)
 
 //expressions
 sealed abstract class Expression

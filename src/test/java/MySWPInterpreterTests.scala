@@ -469,7 +469,7 @@ class MySWPInterpreterTests extends FunSuite {
     {}
     blabla
                """
-    assertResult("Interpretation failed! Variable not declared: blabla") {
+    assertResult("Interpretation failed! Variable blabla not declared in function start") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -722,6 +722,17 @@ class MySWPInterpreterTests extends FunSuite {
    plus(INTMIN)
                """
     assertResult("Interpretation failed! Too few args for func plus. Only 1 provided!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("fewArgsCustom") {
+    val prog = """
+   {
+   fun(x,y) = y
+   }
+   fun(1)
+               """
+    assertResult("Interpretation failed! Too few args for func fun. Only 1 provided!") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
