@@ -31,7 +31,7 @@ case class ValUncaughtException(v: String) extends Value
 object PrettyPrinter {
   def print(value: Value):String = value match {
     case ValInt(v) => v.toString
-    case ValString(v) => v
+    case ValString(v) => "\"" + v + "\""
     case ValList(v)=> {
       var res = "["
       for (x <- v) {
