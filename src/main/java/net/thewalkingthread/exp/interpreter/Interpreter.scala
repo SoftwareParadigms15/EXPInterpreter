@@ -43,18 +43,21 @@ object Interpreter {
   def builtinFirst(args: Value) = args match {
     case ValList(Nil) => throw ExpInternalException("EmptyList", "first")
     case ValList(v) => v.head
+    case ValString(v) => ValString(v.charAt(0).toString)
     case _ => throw ExpInternalException("TypeMismatch", "first")
   }
 
   def builtinRest(args: Value) = args match {
     case ValList(Nil) => throw ExpInternalException("EmptyList", "rest")
     case ValList(v::vs) => ValList(vs)
+    case ValString(v) => ValString(v.substring(1))
     case _ => throw ExpInternalException("TypeMismatch", "rest")
   }
 
   def builtinBuild(a: Value, b: Value) = (a, b) match {
     case (ValInt(iv), ValList(lv)) => ValList(a::lv)
     case (ValList(iv), ValList(lv)) => ValList(a::lv)
+    case (ValString(iv), ValString(lv)) => ValString(iv+lv)
     case _ => throw ExpInternalException("TypeMismatch", "build")
   }
 
@@ -70,11 +73,13 @@ object Interpreter {
 
   def builtinLen(a: Value) = a match {
     case ValList(x) => ValInt(x.length)
+    case ValString(v) => ValInt(v.length)
     case _ => throw ExpInternalException("TypeMismatch", "len")
   }
 
   def builtinReverse(a: Value) = a match {
     case ValList(x) => ValList(x.reverse)
+    case ValString(v) => ValString(v.reverse)
     case _ => throw ExpInternalException("TypeMismatch", "reverse")
   }
 
@@ -128,6 +133,7 @@ object Interpreter {
   def predEq(a: Value, b: Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => x == y
     case (ValList(x), ValList(y)) => x == y
+    case (ValString(x), ValString(y)) => x == y
     case (_,_) => throw ExpInternalException("TypeMismatch", "eq")
   }
 
@@ -153,6 +159,7 @@ object Interpreter {
 
   def predAtom(a: Value) = a match {
     case ValInt(_) => true
+    case ValString(_) => true
     case ValList(_) => false
     case ValUncaughtException(_) => false
   }
@@ -172,6 +179,7 @@ object Interpreter {
         }
 
         case ExpInt(v) => ValInt(v)
+        case ExpString(v) => ValString(v)
 
         case ExpList(v) => ValList(v.map(ex => interpret(functionEnvironment, variableEnvironment, ex)))
 

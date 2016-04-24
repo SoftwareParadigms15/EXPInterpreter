@@ -11,6 +11,7 @@ EXP is a custom, turing complete programming language, which is used by the Soft
 ## Supported variables and functions
 Following built-in variables are supported:
  - integer
+ - string
  - list
  
 Following built-in functions are supported:
@@ -18,13 +19,13 @@ Following built-in functions are supported:
  - minus(x,y)     (x-y)
  - mult(x,y)      (x*y)
  - div(x,y)       (x/y)
- - first(x)       (first element in list x)
+ - first(x)       (first element in list x or first char in string x)
  - rest(x)        (all elements in list x except the first one)
  - build(x,y)     (put element x in list y)
  - inc(x)         (increase x by one)
  - dec(x)         (decrease x by one)
  - reverse(x)     (returns list x in reverse order)
- - len(x)         (returns the length of list x as an integer)
+ - len(x)         (returns the length of list/string x as an integer)
  - fak(x)         (returns factorial of x)
  - sqrt(x)        (returns the square root of x, floors if necessary)
  - abs(x)         (returns the absolute value of x)
@@ -38,7 +39,7 @@ Following built-in conditionals are supported (all conditionals support lists an
  - gt?(x,y)       (true if x > y)
  - is0?(x)        (true if x = 0)
  - is1?(x)        (true if x = 1)
- - atom?(x)       (true if x is an integer, false if x is a list)
+ - atom?(x)       (true if x is an integer/string, false if x is a list)
 
 User defined functions and exceptions are also supported. Built-in functions can be overloaded by user defined functions if they have the same name. In this case, always the user defined function will be used.
 

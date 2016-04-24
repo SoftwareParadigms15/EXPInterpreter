@@ -16,7 +16,7 @@ class ExpParser extends JavaTokenParsers {
       case n~_~xs~_~_~e => FunctionDeclaration(n,xs,e)
     }
 
-  private def expression: Parser[Expression] = cond | myThrow | tryCatch | function | int | list | variable
+  private def expression: Parser[Expression] = cond | myThrow | tryCatch | function | int | string | list | variable
 
   private def predicate: Parser[Predicate] = identifier ~ "?" ~ "(" ~ repsep(expression, ",") <~ ")" ^^ {
     case i~_~_~es => Predicate(i,es)
@@ -24,6 +24,7 @@ class ExpParser extends JavaTokenParsers {
 
   //Terminale
   val int: Parser[ExpInt] = "(-?[1-9][0-9]*)|0".r ^^ { x => ExpInt(x.toInt)}
+  val string : Parser[ExpString] = "\"[a-zA-Z][a-zA-Z0-9]*\"".r ^^ { x => ExpString(x.substring(1, x.length - 1))}
 
   val identifier : Parser[String] = "[a-zA-Z][a-zA-Z0-9]*".r
 

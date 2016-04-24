@@ -795,5 +795,45 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("string1") {
+    val prog = """
+   {
+   }
+   "YES"
+               """
+    assertResult("YES") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string2") {
+    val prog = """
+   {
+   }
+   if eq?("YES", "YES") then "YES" else "NO"
+               """
+    assertResult("YES") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string3") {
+    val prog = """
+   {
+   }
+   if eq?("YES", 1) then "YES" else "NO"
+               """
+    assertResult("Uncaught exception TypeMismatch at function eq!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string4") {
+    val prog = """
+   {
+   }
+   len("TEST")
+               """
+    assertResult("4") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 
 }
