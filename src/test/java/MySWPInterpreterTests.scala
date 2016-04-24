@@ -464,23 +464,6 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
-  test("bad program no variable") {
-    val prog = """
-    {}
-    blabla
-               """
-    assertResult("Interpretation failed! Variable blabla not declared in function start") {
-      SWPInterpreter.evaluateProgram(prog)
-    }
-  }
-  test("bad program syntax") {
-    val prog = """
-    blabla
-               """
-    assertResult("No result when parsing failed") {
-      SWPInterpreter.evaluateProgram(prog)
-    }
-  }
   test("bad program no condition") {
     val prog = """
     {length(x) = if badcond?(x,[]) then 0 else length(plus(1, length(rest(x))))}
@@ -856,5 +839,4 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
-
 }
