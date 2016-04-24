@@ -835,5 +835,15 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("ne1") {
+    val prog = """
+   {
+   }
+   if ne?(1,-1) then "YES" else "NO"
+               """
+    assertResult("YES") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 
 }

@@ -24,7 +24,7 @@ Following built-in functions are supported:
  - build(x,y)     (put element x in list y)
  - inc(x)         (increase x by one)
  - dec(x)         (decrease x by one)
- - reverse(x)     (returns list x in reverse order)
+ - reverse(x)     (returns list/string x in reverse order)
  - len(x)         (returns the length of list/string x as an integer)
  - fak(x)         (returns factorial of x)
  - sqrt(x)        (returns the square root of x, floors if necessary)
@@ -40,6 +40,7 @@ Following built-in conditionals are supported (all conditionals support lists an
  - is0?(x)        (true if x = 0)
  - is1?(x)        (true if x = 1)
  - atom?(x)       (true if x is an integer/string, false if x is a list)
+ - ne?(x,y)       (true if x == y * -1)
 
 User defined functions and exceptions are also supported. Built-in functions can be overloaded by user defined functions if they have the same name. In this case, always the user defined function will be used.
 

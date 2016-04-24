@@ -164,6 +164,10 @@ object Interpreter {
     case ValUncaughtException(_) => false
   }
 
+  def predNe(a: Value, b: Value) = (a,b) match {
+    case (ValInt(x), ValInt(y)) => x == (y * -1)
+    case (_,_) => throw ExpInternalException("TypeMismatch", "ne")
+  }
 
   def interpret(functionEnvironment: Map[FunctionName, FunctionDeclaration],
                 variableEnvironment: Map[VariableName, Value],
@@ -269,6 +273,14 @@ object Interpreter {
 
     case ExpCond(Predicate("atom", params), e1, e2) => {
       if (predAtom(interpret(functionEnvironment, variableEnvironment, params.head)))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
+
+    case ExpCond(Predicate("ne", params), e1, e2) => {
+      if (predNe(interpret(functionEnvironment, variableEnvironment, params.head), interpret(functionEnvironment, variableEnvironment,
+        params(1))))
         interpret(functionEnvironment, variableEnvironment, e1)
       else
         interpret(functionEnvironment, variableEnvironment, e2)
