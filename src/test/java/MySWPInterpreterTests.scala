@@ -801,7 +801,7 @@ class MySWPInterpreterTests extends FunSuite {
    }
    "YES"
                """
-    assertResult("YES") {
+    assertResult("\"YES\"") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -811,7 +811,7 @@ class MySWPInterpreterTests extends FunSuite {
    }
    if eq?("YES", "YES") then "YES" else "NO"
                """
-    assertResult("YES") {
+    assertResult("\"YES\"") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
@@ -841,7 +841,7 @@ class MySWPInterpreterTests extends FunSuite {
    }
    if ne?(1,-1) then "YES" else "NO"
                """
-    assertResult("YES") {
+    assertResult("\"YES\"") {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
