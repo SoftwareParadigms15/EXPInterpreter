@@ -735,5 +735,65 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("pow1") {
+    val prog = """
+   {
+   }
+   pow(3, 4)
+               """
+    assertResult("81") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("pow2") {
+    val prog = """
+   {
+   }
+   pow(15, 0)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("pow3") {
+    val prog = """
+   {
+   }
+   pow(15, 1)
+               """
+    assertResult("15") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("atom1") {
+    val prog = """
+   {
+   }
+   if atom?(1) then 1 else 0
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("atom2") {
+    val prog = """
+   {
+   }
+   if atom?([1]) then 1 else 0
+               """
+    assertResult("0") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("atom3") {
+    val prog = """
+   {
+   }
+   if atom?(first([1,2])) then 1 else 0
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 
 }

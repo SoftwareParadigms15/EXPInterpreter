@@ -30,13 +30,15 @@ Following built-in functions are supported:
  - abs(x)         (returns the absolute value of x)
  - random(x)      (returns a random number between 0 and x)
  - gcd(x,y)       (returns the greatest common divisor of x and y)
+ - pow(x,y)       (returns x^y)
 
 Following built-in conditionals are supported (all conditionals support lists and integers):
  - eq?(x,y)       (true if x and y have the same value)
  - lt?(x,y)       (true if x < y)
- - gt?(x,y)       (true if y > x)
+ - gt?(x,y)       (true if x > y)
  - is0?(x)        (true if x = 0)
- - is1?(1)        (true if x = 1)
+ - is1?(x)        (true if x = 1)
+ - atom?(x)       (true if x is an integer, false if x is a list)
 
 User defined functions and exceptions are also supported. Built-in functions can be overloaded by user defined functions if they have the same name. In this case, always the user defined function will be used.
 

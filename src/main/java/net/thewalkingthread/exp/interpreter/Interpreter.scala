@@ -117,6 +117,14 @@ object Interpreter {
     case _ => throw ExpInternalException("TypeMismatch", "gcd")
   }
 
+  def builtinPow(a:Value, b:Value) = (a,b) match {
+    case (ValInt(_), ValInt(0)) => ValInt(1)
+    case (ValInt(x), ValInt(1)) => ValInt(x)
+    case (ValInt(x), ValInt(y)) if x < Long.MaxValue && y < Long.MaxValue => ValInt(BigInteger.valueOf(x).pow(y.toInt).longValue())
+    case (ValInt(_), ValInt(_)) => throw ExpInternalException("ValueTooBig", "pow")
+    case _ => throw ExpInternalException("TypeMismatch", "pow")
+  }
+
   def predEq(a: Value, b: Value) = (a,b) match {
     case (ValInt(x), ValInt(y)) => x == y
     case (ValList(x), ValList(y)) => x == y
@@ -141,6 +149,12 @@ object Interpreter {
   def predIs1(a: Value) = a match {
     case ValInt(x) => x == 1
     case _ => throw ExpInternalException("TypeMismatch", "is1")
+  }
+
+  def predAtom(a: Value) = a match {
+    case ValInt(_) => true
+    case ValList(_) => false
+    case ValUncaughtException(_) => false
   }
 
 
@@ -245,6 +259,13 @@ object Interpreter {
         interpret(functionEnvironment, variableEnvironment, e2)
     }
 
+    case ExpCond(Predicate("atom", params), e1, e2) => {
+      if (predAtom(interpret(functionEnvironment, variableEnvironment, params.head)))
+        interpret(functionEnvironment, variableEnvironment, e1)
+      else
+        interpret(functionEnvironment, variableEnvironment, e2)
+    }
+
     case ExpCond(Predicate(func, _), _, _) => throw new InterpreterFailedException("Condition not declared: " + func)
   }
 
@@ -295,6 +316,9 @@ object Interpreter {
     case ExpFunction("rand", args: List[Expression]) => builtinRand(interpret(functionEnvironment, variableEnvironment, args.head))
 
     case ExpFunction("gcd", args: List[Expression]) => builtinGcd(interpret(functionEnvironment, variableEnvironment, args.head),
+      interpret(functionEnvironment, variableEnvironment, args(1)))
+
+    case ExpFunction("pow", args: List[Expression]) => builtinPow(interpret(functionEnvironment, variableEnvironment, args.head),
       interpret(functionEnvironment, variableEnvironment, args(1)))
 
     case ExpFunction(funcIdentifier, _) => throw InterpreterFailedException("Function not declared: " + funcIdentifier)
