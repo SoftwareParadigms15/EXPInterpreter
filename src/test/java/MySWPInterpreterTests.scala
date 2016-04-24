@@ -735,5 +735,115 @@ class MySWPInterpreterTests extends FunSuite {
       SWPInterpreter.evaluateProgram(prog)
     }
   }
+  test("pow1") {
+    val prog = """
+   {
+   }
+   pow(3, 4)
+               """
+    assertResult("81") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("pow2") {
+    val prog = """
+   {
+   }
+   pow(15, 0)
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("pow3") {
+    val prog = """
+   {
+   }
+   pow(15, 1)
+               """
+    assertResult("15") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("atom1") {
+    val prog = """
+   {
+   }
+   if atom?(1) then 1 else 0
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("atom2") {
+    val prog = """
+   {
+   }
+   if atom?([1]) then 1 else 0
+               """
+    assertResult("0") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("atom3") {
+    val prog = """
+   {
+   }
+   if atom?(first([1,2])) then 1 else 0
+               """
+    assertResult("1") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string1") {
+    val prog = """
+   {
+   }
+   "YES"
+               """
+    assertResult("\"YES\"") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string2") {
+    val prog = """
+   {
+   }
+   if eq?("YES", "YES") then "YES" else "NO"
+               """
+    assertResult("\"YES\"") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string3") {
+    val prog = """
+   {
+   }
+   if eq?("YES", 1) then "YES" else "NO"
+               """
+    assertResult("Uncaught exception TypeMismatch at function eq!") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("string4") {
+    val prog = """
+   {
+   }
+   len("TEST")
+               """
+    assertResult("4") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
+  test("ne1") {
+    val prog = """
+   {
+   }
+   if ne?(1,-1) then "YES" else "NO"
+               """
+    assertResult("\"YES\"") {
+      SWPInterpreter.evaluateProgram(prog)
+    }
+  }
 
 }

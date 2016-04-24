@@ -9,6 +9,7 @@ sealed abstract class Expression
 case class ExpVariable(v:String) extends  Expression
 case class ExpInt(v: Long) extends Expression
 case class ExpList(v: List[Expression]) extends Expression
+case class ExpString(v: String) extends Expression
 case class ExpCond(p: Predicate, e1: Expression, e2:Expression)  extends  Expression
 case class ExpTryCatch(tryExp: Expression, handlerList: List[Handler]) extends Expression
 case class ExpFunction(id:String, ex:List[Expression]) extends Expression
@@ -24,11 +25,13 @@ case class Predicate(name: String, params: List[Expression])
 sealed abstract class Value
 case class ValInt(v: Long) extends Value
 case class ValList(v: List[Value]) extends Value
+case class ValString(v: String) extends Value
 case class ValUncaughtException(v: String) extends Value
 
 object PrettyPrinter {
   def print(value: Value):String = value match {
     case ValInt(v) => v.toString
+    case ValString(v) => "\"" + v + "\""
     case ValList(v)=> {
       var res = "["
       for (x <- v) {
