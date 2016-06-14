@@ -13,7 +13,7 @@ class ExpParser extends JavaTokenParsers {
 
   private def funcDecl: Parser[FunctionDeclaration] =
     identifier ~ "(" ~ repsep(identifier, ",") ~ ")" ~ "=" ~ expression ^^ {
-      case n~_~xs~_~_~e => FunctionDeclaration(n,xs,e)
+      case n~_~xs~_~_~e => FunctionDeclaration(n,xs,e,xs.size)
     }
 
   private def expression: Parser[Expression] = cond | myThrow | tryCatch | function | int | string | list | variable

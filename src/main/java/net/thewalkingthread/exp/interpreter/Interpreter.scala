@@ -13,6 +13,8 @@ object Interpreter {
   type FunctionName = String
   type VariableName = String
 
+  var currentFunc: String = "start"
+
   //map for constants
   val constants = Map[String, Value](
     "INTMAX" -> ValInt(Int.MaxValue),
@@ -178,7 +180,7 @@ object Interpreter {
           case Some(n) => n
           case None => constants get name match {
             case Some(n) => n
-            case None => throw InterpreterFailedException("Variable not declared: " + name)
+            case None => throw InterpreterFailedException("Variable " + name + " not declared in function " + currentFunc)
           }
         }
 
@@ -189,9 +191,11 @@ object Interpreter {
 
         case ExpFunction(funcIdentifier, args: List[Expression]) => {
           val fnDeclaration = functionEnvironment get funcIdentifier
+          this.currentFunc = funcIdentifier
           fnDeclaration match {
-            case Some(FunctionDeclaration(_, params, body)) => {
+            case Some(FunctionDeclaration(_, params, body, variableCount)) => {
               val interpretedArgs = args.map(x => interpret(functionEnvironment, variableEnvironment, x))
+              if (interpretedArgs.size != variableCount) throw new InterpreterFailedException("Too few args for func %s. Only %s provided!".format(currentFunc, interpretedArgs.size))
               val newEnv = params.zip(interpretedArgs).toMap
               interpret(functionEnvironment, newEnv, body)
             }
@@ -216,7 +220,7 @@ object Interpreter {
           }
         }
 
-        case ExpThrow(exceptionId) => throw ExpInternalException(exceptionId, "userfunc")
+        case ExpThrow(exceptionId) => throw ExpInternalException(exceptionId, currentFunc)
 
         case _ => throw new InterpreterFailedException("Unknown expression")
       }
@@ -224,9 +228,7 @@ object Interpreter {
       //case ExpInternalException(exceptId) => ValUncaughtException(exceptId)
       case e: IndexOutOfBoundsException => {
         expression match {
-          case ExpFunction(name, args) => throw new InterpreterFailedException("Too few args for func %s. Only %s provided!".format(name,
-            args
-            .size))
+          case ExpFunction(name, args) => throw new InterpreterFailedException("Too few args for func %s. Only %s provided!".format(name, args.size))
           case _ => throw e
         }
       }

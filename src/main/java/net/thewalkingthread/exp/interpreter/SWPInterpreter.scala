@@ -19,9 +19,15 @@ object SWPInterpreter {
 
   def evaluateProgram(program:String):String = {
     try {
-      val Program(funcs, exp) = ParseProgram.parse(program).get
-      val result = Interpreter.interpret(funcs.map(x=>(x.name, x)).toMap, Map(), exp)
-      PrettyPrinter.print(result)
+      val parserResult = ParseProgram.parse(program)
+      if (parserResult.successful) {
+        val Program(funcs, exp) = parserResult.get
+        val result = Interpreter.interpret(funcs.map(x=>(x.name, x)).toMap, Map(), exp)
+        PrettyPrinter.print(result)
+      } else  {
+        val errorMsg = PrettyPrinter.formatError(parserResult.toString)
+        throw new InterpreterFailedException(errorMsg)
+      }
     } catch {
       case InterpreterFailedException(msg) => "Interpretation failed! "+msg
       case ExpInternalException(msg, funcName) => "Uncaught exception %s at function %s!".format(msg, funcName)
